@@ -35,3 +35,10 @@ variable "aws_ecr_repository_image_scanning_configuration_scan_on_push" {
   description = "Indicates whether images are scanned after being pushed to the repository (true) or not scanned (false)."
   type = string
 }
+
+###################
+## IAM ROLE
+###################
+variable "iam_role_name" {
+  type = string
+}
