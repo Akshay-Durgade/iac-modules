@@ -6,6 +6,10 @@ output "s3_bucket_regional_domain_name" {
   value = module.s3_bucket.s3_bucket_regional_domain_name
 }
 
+output "oac_id" {
+  value = module.cloudfront.oac_id
+}
+
 output "website_endpoint" {
   value = module.s3_bucket.website_endpoint
 }

@@ -13,8 +13,7 @@ data "aws_iam_policy_document" "allow_access_from_cloudfront" {
     ]
 
     resources = [
-      module.s3_bucket.arn,
-      "${module.s3_bucket.arn}/*",
+      "${module.s3_bucket.arn}/*"
     ]
 
     condition {
@@ -24,3 +23,24 @@ data "aws_iam_policy_document" "allow_access_from_cloudfront" {
     }
   }
 }
+
+# {
+#         "Version": "2008-10-17",
+#         "Id": "PolicyForCloudFrontPrivateContent",
+#         "Statement": [
+#             {
+#                 "Sid": "AllowCloudFrontServicePrincipal",
+#                 "Effect": "Allow",
+#                 "Principal": {
+#                     "Service": "cloudfront.amazonaws.com"
+#                 },
+#                 "Action": "s3:GetObject",
+#                 "Resource": "arn:aws:s3:::portfoliowebsiteakshaydurgade/*",
+#                 "Condition": {
+#                     "StringEquals": {
+#                       "AWS:SourceArn": "arn:aws:cloudfront::448222643985:distribution/E278T3WAZY3VQQ"
+#                     }
+#                 }
+#             }
+#         ]
+#       }

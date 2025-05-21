@@ -14,7 +14,6 @@ module "cloudfront" {
   oac_origin_access_control_origin_type                       = var.oac_origin_access_control_origin_type
   oac_signing_protocol                                        = var.oac_signing_protocol
   oac_signing_behavior                                        = var.oac_signing_behavior
-  
   cf_domain_name                                              = module.s3_bucket.s3_bucket_regional_domain_name
   cf_default_cache_behavior_target_origin_id                  = var.cf_origin_id
   cf_aliases                                                  = var.cf_aliases
