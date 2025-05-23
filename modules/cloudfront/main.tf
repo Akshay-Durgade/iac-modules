@@ -27,14 +27,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   compress               = var.cf_default_cache_behavior_enable_compress
   cache_policy_id        = var.cf_default_cache_behavior_cache_policy_id
 
-  # forwarded_values {
-  #   query_string = var.cf_default_cache_behavior_forwarded_values_query_string
-
-  #   cookies {
-  #     forward = var.cf_default_cache_behavior_forwarded_values_cookies_forward
-  #   }
-  # }
-
   viewer_protocol_policy = var.cf_default_cache_behavior_viewer_protocol_policy
   min_ttl                = var.cf_default_cache_behavior_min_ttl
   default_ttl            = var.cf_default_cache_behavior_default_ttl

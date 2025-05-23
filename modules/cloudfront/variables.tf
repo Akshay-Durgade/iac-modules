@@ -1,3 +1,6 @@
+########################
+## OAC
+########################
 variable "oac_name" {
   description = "A name that identifies the Origin Access Control."
   type = string
@@ -79,16 +82,6 @@ variable "cf_default_cache_behavior_cached_methods" {
 variable "cf_default_cache_behavior_target_origin_id" {
   type = string
 }
-
-# variable "cf_default_cache_behavior_forwarded_values_query_string" {
-#   type = bool
-#   default = false
-# }
-
-# variable "cf_default_cache_behavior_forwarded_values_cookies_forward" {
-#   type = string
-#   default = "none"
-# }
 
 variable "cf_default_cache_behavior_viewer_protocol_policy" {
   type = string
