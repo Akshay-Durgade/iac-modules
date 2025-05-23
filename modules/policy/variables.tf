@@ -6,4 +6,3 @@ variable "iam_policies" {
     policy_file  = string
   }))
 }
-
