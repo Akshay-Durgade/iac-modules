@@ -287,6 +287,98 @@ variable "public_route_table_tags" {
 }
 
 ################################################################################
+# Public Network ACLs
+################################################################################
+
+variable "public_dedicated_network_acl" {
+  description = "Whether to use dedicated network ACL (not default) and custom rules for public subnets"
+  type        = bool
+  default     = false
+}
+
+variable "public_inbound_acl_rules" {
+  description = "Public subnets inbound network ACLs"
+  type        = list(map(string))
+  default = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+}
+
+variable "public_outbound_acl_rules" {
+  description = "Public subnets outbound network ACLs"
+  type        = list(map(string))
+  default = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+}
+
+variable "public_acl_tags" {
+  description = "Additional tags for the public subnets network ACL"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Private Network ACLs
+################################################################################
+
+variable "private_dedicated_network_acl" {
+  description = "Whether to use dedicated network ACL (not default) and custom rules for private subnets"
+  type        = bool
+  default     = false
+}
+
+variable "private_inbound_acl_rules" {
+  description = "Private subnets inbound network ACLs"
+  type        = list(map(string))
+  default = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+}
+
+variable "private_outbound_acl_rules" {
+  description = "Private subnets outbound network ACLs"
+  type        = list(map(string))
+  default = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+}
+
+variable "private_acl_tags" {
+  description = "Additional tags for the private subnets network ACL"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
 # Internet Gateway
 ################################################################################
 
@@ -450,6 +542,530 @@ variable "private_subnet_tags_per_az" {
 
 variable "private_route_table_tags" {
   description = "Additional tags for the private route tables"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Database Subnets
+################################################################################
+
+variable "database_subnets" {
+  description = "A list of database subnets inside the VPC"
+  type        = list(string)
+  default     = []
+}
+
+variable "database_subnet_assign_ipv6_address_on_creation" {
+  description = "Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is `false`"
+  type        = bool
+  default     = false
+}
+
+variable "database_subnet_enable_dns64" {
+  description = "Indicates whether DNS queries made to the Amazon-provided DNS Resolver in this subnet should return synthetic IPv6 addresses for IPv4-only destinations. Default: `true`"
+  type        = bool
+  default     = true
+}
+
+variable "database_subnet_enable_resource_name_dns_aaaa_record_on_launch" {
+  description = "Indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records. Default: `true`"
+  type        = bool
+  default     = true
+}
+
+variable "database_subnet_enable_resource_name_dns_a_record_on_launch" {
+  description = "Indicates whether to respond to DNS queries for instance hostnames with DNS A records. Default: `false`"
+  type        = bool
+  default     = false
+}
+
+variable "database_subnet_ipv6_prefixes" {
+  description = "Assigns IPv6 database subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
+  type        = list(string)
+  default     = []
+}
+
+variable "database_subnet_ipv6_native" {
+  description = "Indicates whether to create an IPv6-only subnet. Default: `false`"
+  type        = bool
+  default     = false
+}
+
+variable "database_subnet_private_dns_hostname_type_on_launch" {
+  description = "The type of hostnames to assign to instances in the subnet at launch. For IPv6-only subnets, an instance DNS name must be based on the instance ID. For dual-stack and IPv4-only subnets, you can specify whether DNS names use the instance IPv4 address or the instance ID. Valid values: `ip-name`, `resource-name`"
+  type        = string
+  default     = null
+}
+
+variable "database_subnet_names" {
+  description = "Explicit values to use in the Name tag on database subnets. If empty, Name tags are generated"
+  type        = list(string)
+  default     = []
+}
+
+variable "database_subnet_suffix" {
+  description = "Suffix to append to database subnets name"
+  type        = string
+  default     = "db"
+}
+
+variable "create_database_subnet_route_table" {
+  description = "Controls if separate route table for database should be created"
+  type        = bool
+  default     = false
+}
+
+variable "create_database_internet_gateway_route" {
+  description = "Controls if an internet gateway route for public database access should be created"
+  type        = bool
+  default     = false
+}
+
+variable "create_database_nat_gateway_route" {
+  description = "Controls if a nat gateway route should be created to give internet access to the database subnets"
+  type        = bool
+  default     = false
+}
+
+variable "database_route_table_tags" {
+  description = "Additional tags for the database route tables"
+  type        = map(string)
+  default     = {}
+}
+
+variable "database_subnet_tags" {
+  description = "Additional tags for the database subnets"
+  type        = map(string)
+  default     = {}
+}
+
+variable "create_database_subnet_group" {
+  description = "Controls if database subnet group should be created (n.b. database_subnets must also be set)"
+  type        = bool
+  default     = true
+}
+
+variable "database_subnet_group_name" {
+  description = "Name of database subnet group"
+  type        = string
+  default     = null
+}
+
+variable "database_subnet_group_tags" {
+  description = "Additional tags for the database subnet group"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Database Network ACLs
+################################################################################
+
+variable "database_dedicated_network_acl" {
+  description = "Whether to use dedicated network ACL (not default) and custom rules for database subnets"
+  type        = bool
+  default     = false
+}
+
+variable "database_inbound_acl_rules" {
+  description = "Database subnets inbound network ACL rules"
+  type        = list(map(string))
+  default = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+}
+
+variable "database_outbound_acl_rules" {
+  description = "Database subnets outbound network ACL rules"
+  type        = list(map(string))
+  default = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+}
+
+variable "database_acl_tags" {
+  description = "Additional tags for the database subnets network ACL"
+  type        = map(string)
+  default     = {}
+}
+
+
+################################################################################
+# Intra Subnets
+################################################################################
+
+variable "intra_subnets" {
+  description = "A list of intra subnets inside the VPC"
+  type        = list(string)
+  default     = []
+}
+
+variable "intra_subnet_assign_ipv6_address_on_creation" {
+  description = "Specify true to indicate that network interfaces created in the specified subnet should be assigned an IPv6 address. Default is `false`"
+  type        = bool
+  default     = false
+}
+
+variable "intra_subnet_enable_dns64" {
+  description = "Indicates whether DNS queries made to the Amazon-provided DNS Resolver in this subnet should return synthetic IPv6 addresses for IPv4-only destinations. Default: `true`"
+  type        = bool
+  default     = true
+}
+
+variable "intra_subnet_enable_resource_name_dns_aaaa_record_on_launch" {
+  description = "Indicates whether to respond to DNS queries for instance hostnames with DNS AAAA records. Default: `true`"
+  type        = bool
+  default     = true
+}
+
+variable "intra_subnet_enable_resource_name_dns_a_record_on_launch" {
+  description = "Indicates whether to respond to DNS queries for instance hostnames with DNS A records. Default: `false`"
+  type        = bool
+  default     = false
+}
+
+variable "create_multiple_intra_route_tables" {
+  description = "Indicates whether to create a separate route table for each intra subnet. Default: `false`"
+  type        = bool
+  default     = false
+}
+
+variable "intra_subnet_ipv6_prefixes" {
+  description = "Assigns IPv6 intra subnet id based on the Amazon provided /56 prefix base 10 integer (0-256). Must be of equal length to the corresponding IPv4 subnet list"
+  type        = list(string)
+  default     = []
+}
+
+variable "intra_subnet_ipv6_native" {
+  description = "Indicates whether to create an IPv6-only subnet. Default: `false`"
+  type        = bool
+  default     = false
+}
+
+variable "intra_subnet_private_dns_hostname_type_on_launch" {
+  description = "The type of hostnames to assign to instances in the subnet at launch. For IPv6-only subnets, an instance DNS name must be based on the instance ID. For dual-stack and IPv4-only subnets, you can specify whether DNS names use the instance IPv4 address or the instance ID. Valid values: `ip-name`, `resource-name`"
+  type        = string
+  default     = null
+}
+
+variable "intra_subnet_names" {
+  description = "Explicit values to use in the Name tag on intra subnets. If empty, Name tags are generated"
+  type        = list(string)
+  default     = []
+}
+
+variable "intra_subnet_suffix" {
+  description = "Suffix to append to intra subnets name"
+  type        = string
+  default     = "intra"
+}
+
+variable "intra_subnet_tags" {
+  description = "Additional tags for the intra subnets"
+  type        = map(string)
+  default     = {}
+}
+
+variable "intra_route_table_tags" {
+  description = "Additional tags for the intra route tables"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Intra Network ACLs
+################################################################################
+
+variable "intra_dedicated_network_acl" {
+  description = "Whether to use dedicated network ACL (not default) and custom rules for intra subnets"
+  type        = bool
+  default     = false
+}
+
+variable "intra_inbound_acl_rules" {
+  description = "Intra subnets inbound network ACLs"
+  type        = list(map(string))
+  default = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+}
+
+variable "intra_outbound_acl_rules" {
+  description = "Intra subnets outbound network ACLs"
+  type        = list(map(string))
+  default = [
+    {
+      rule_number = 100
+      rule_action = "allow"
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      cidr_block  = "0.0.0.0/0"
+    },
+  ]
+}
+
+variable "intra_acl_tags" {
+  description = "Additional tags for the intra subnets network ACL"
+  type        = map(string)
+  default     = {}
+}
+
+
+################################################################################
+# Default Network ACLs
+################################################################################
+
+variable "manage_default_network_acl" {
+  description = "Should be true to adopt and manage Default Network ACL"
+  type        = bool
+  default     = true
+}
+
+variable "default_network_acl_name" {
+  description = "Name to be used on the Default Network ACL"
+  type        = string
+  default     = null
+}
+
+variable "default_network_acl_ingress" {
+  description = "List of maps of ingress rules to set on the Default Network ACL"
+  type        = list(map(string))
+  default = [
+    {
+      rule_no    = 100
+      action     = "allow"
+      from_port  = 0
+      to_port    = 0
+      protocol   = "-1"
+      cidr_block = "0.0.0.0/0"
+    },
+    {
+      rule_no         = 101
+      action          = "allow"
+      from_port       = 0
+      to_port         = 0
+      protocol        = "-1"
+      ipv6_cidr_block = "::/0"
+    },
+  ]
+}
+
+variable "default_network_acl_egress" {
+  description = "List of maps of egress rules to set on the Default Network ACL"
+  type        = list(map(string))
+  default = [
+    {
+      rule_no    = 100
+      action     = "allow"
+      from_port  = 0
+      to_port    = 0
+      protocol   = "-1"
+      cidr_block = "0.0.0.0/0"
+    },
+    {
+      rule_no         = 101
+      action          = "allow"
+      from_port       = 0
+      to_port         = 0
+      protocol        = "-1"
+      ipv6_cidr_block = "::/0"
+    },
+  ]
+}
+
+variable "default_network_acl_tags" {
+  description = "Additional tags for the Default Network ACL"
+  type        = map(string)
+  default     = {}
+}
+
+
+################################################################################
+# Customer Gateways
+################################################################################
+
+variable "customer_gateways" {
+  description = "Maps of Customer Gateway's attributes (BGP ASN and Gateway's Internet-routable external IP address)"
+  type        = map(map(any))
+  default     = {}
+}
+
+variable "customer_gateway_tags" {
+  description = "Additional tags for the Customer Gateway"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# VPN Gateway
+################################################################################
+
+variable "enable_vpn_gateway" {
+  description = "Should be true if you want to create a new VPN Gateway resource and attach it to the VPC"
+  type        = bool
+  default     = false
+}
+
+variable "vpn_gateway_id" {
+  description = "ID of VPN Gateway to attach to the VPC"
+  type        = string
+  default     = ""
+}
+
+variable "amazon_side_asn" {
+  description = "The Autonomous System Number (ASN) for the Amazon side of the gateway. By default the virtual private gateway is created with the current default Amazon ASN"
+  type        = string
+  default     = "64512"
+}
+
+variable "vpn_gateway_az" {
+  description = "The Availability Zone for the VPN Gateway"
+  type        = string
+  default     = null
+}
+
+variable "propagate_intra_route_tables_vgw" {
+  description = "Should be true if you want route table propagation"
+  type        = bool
+  default     = false
+}
+
+variable "propagate_private_route_tables_vgw" {
+  description = "Should be true if you want route table propagation"
+  type        = bool
+  default     = false
+}
+
+variable "propagate_public_route_tables_vgw" {
+  description = "Should be true if you want route table propagation"
+  type        = bool
+  default     = false
+}
+
+variable "vpn_gateway_tags" {
+  description = "Additional tags for the VPN gateway"
+  type        = map(string)
+  default     = {}
+}
+
+################################################################################
+# Default VPC
+################################################################################
+
+variable "manage_default_vpc" {
+  description = "Should be true to adopt and manage Default VPC"
+  type        = bool
+  default     = false
+}
+
+variable "default_vpc_name" {
+  description = "Name to be used on the Default VPC"
+  type        = string
+  default     = null
+}
+
+variable "default_vpc_enable_dns_support" {
+  description = "Should be true to enable DNS support in the Default VPC"
+  type        = bool
+  default     = true
+}
+
+variable "default_vpc_enable_dns_hostnames" {
+  description = "Should be true to enable DNS hostnames in the Default VPC"
+  type        = bool
+  default     = true
+}
+
+variable "default_vpc_tags" {
+  description = "Additional tags for the Default VPC"
+  type        = map(string)
+  default     = {}
+}
+
+variable "manage_default_security_group" {
+  description = "Should be true to adopt and manage default security group"
+  type        = bool
+  default     = true
+}
+
+variable "default_security_group_name" {
+  description = "Name to be used on the default security group"
+  type        = string
+  default     = null
+}
+
+variable "default_security_group_ingress" {
+  description = "List of maps of ingress rules to set on the default security group"
+  type        = list(map(string))
+  default     = []
+}
+
+variable "default_security_group_egress" {
+  description = "List of maps of egress rules to set on the default security group"
+  type        = list(map(string))
+  default     = []
+}
+
+variable "default_security_group_tags" {
+  description = "Additional tags for the default security group"
+  type        = map(string)
+  default     = {}
+}
+
+
+################################################################################
+# Default Route
+################################################################################
+
+variable "manage_default_route_table" {
+  description = "Should be true to manage default route table"
+  type        = bool
+  default     = true
+}
+
+variable "default_route_table_name" {
+  description = "Name to be used on the default route table"
+  type        = string
+  default     = null
+}
+
+variable "default_route_table_propagating_vgws" {
+  description = "List of virtual gateways for propagation"
+  type        = list(string)
+  default     = []
+}
+
+variable "default_route_table_routes" {
+  description = "Configuration block of routes. See https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table#route"
+  type        = list(map(string))
+  default     = []
+}
+
+variable "default_route_table_tags" {
+  description = "Additional tags for the default route table"
   type        = map(string)
   default     = {}
 }
